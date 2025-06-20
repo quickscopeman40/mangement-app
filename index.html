@@ -210,31 +210,28 @@
             // --- PERSISTENCE FUNCTIONS ---
             /**
              * Saves the current state of users and sales.
-             * In a real application, this would use localStorage or a server.
+             * Now uses localStorage for persistence.
              */
             const saveData = () => {
-                // To implement, uncomment the following lines:
-                // const data = { users, sales };
-                // localStorage.setItem('adminPanelData', JSON.stringify(data));
-                console.log("Data saved (simulation).");
+                const data = { users, sales };
+                localStorage.setItem('adminPanelData', JSON.stringify(data));
+                console.log("Data saved to localStorage.");
             };
 
             /**
-             * Loads data from a persistent source.
-             * In a real application, this would use localStorage or a server.
+             * Loads data from localStorage.
              */
             const loadData = () => {
-                // To implement, uncomment the following lines:
-                // const savedData = localStorage.getItem('adminPanelData');
-                // if (savedData) {
-                //     const data = JSON.parse(savedData);
-                //     users = data.users || [];
-                //     sales = data.sales || [];
-                // } else {
+                const savedData = localStorage.getItem('adminPanelData');
+                if (savedData) {
+                    const data = JSON.parse(savedData);
+                    users = data.users || [];
+                    sales = data.sales || [];
+                } else {
                     users = [];
                     sales = [];
-                // }
-                console.log("Data loaded (simulation).");
+                }
+                console.log("Data loaded from localStorage.");
             };
 
             // --- CORE FUNCTIONS ---
