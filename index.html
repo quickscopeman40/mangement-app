@@ -57,7 +57,34 @@
 </head>
 <body class="text-gray-800">
 
-    <div class="flex min-h-screen bg-gray-100">
+    <!-- Login View -->
+    <div id="login-view" class="flex items-center justify-center min-h-screen bg-gray-100">
+        <div class="w-full max-w-md p-8 space-y-8 bg-white rounded-lg shadow-md">
+            <div class="text-center">
+                <h1 class="text-3xl font-bold text-gray-900">Admin Panel Login</h1>
+                <p class="mt-2 text-gray-600">Please sign in to continue</p>
+            </div>
+            <form id="login-form" class="space-y-6">
+                <div>
+                    <label for="username" class="sr-only">Username</label>
+                    <input id="username" name="username" type="text" required class="w-full px-4 py-3 border border-gray-300 rounded-md placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500" placeholder="Username (admin)" value="admin">
+                </div>
+                 <div>
+                    <label for="password" class="sr-only">Password</label>
+                    <input id="password" name="password" type="password" required class="w-full px-4 py-3 border border-gray-300 rounded-md placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500" placeholder="Password (password)" value="password">
+                </div>
+                <p id="login-error" class="text-sm text-red-600 h-4"></p>
+                <div>
+                    <button type="submit" class="w-full flex justify-center py-3 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                        Sign in
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+    
+    <!-- Main App View (Initially Hidden) -->
+    <div id="app-view" class="flex min-h-screen bg-gray-100 hidden">
         <!-- Sidebar Navigation -->
         <aside id="sidebar" class="w-64 bg-white shadow-lg flex-shrink-0 transform md:transform-none -translate-x-full md:translate-x-0 transition-transform duration-300 ease-in-out z-20">
             <div class="p-6 border-b">
@@ -89,7 +116,7 @@
                 </a>
             </nav>
             <div class="absolute bottom-0 w-full p-6 border-t">
-                 <a href="#" class="sidebar-link flex items-center py-2 px-4 text-gray-600">
+                 <a href="#" id="logout-btn" class="sidebar-link flex items-center py-2 px-4 text-gray-600">
                     <i data-lucide="log-out" class="mr-3"></i>
                     Logout
                 </a>
@@ -98,7 +125,6 @@
 
         <!-- Main Content -->
         <div class="flex-1 flex flex-col overflow-hidden">
-            <!-- Header -->
             <header class="flex justify-between items-center p-4 bg-white border-b shadow-sm">
                 <div class="flex items-center">
                     <button id="sidebar-toggle" class="md:hidden mr-4 text-gray-600">
@@ -107,134 +133,83 @@
                     <h2 id="view-title" class="text-xl font-semibold">Dashboard</h2>
                 </div>
                 <div class="flex items-center space-x-4">
-                    <button class="text-gray-500 hover:text-gray-700">
-                        <i data-lucide="bell"></i>
-                    </button>
+                    <button class="text-gray-500 hover:text-gray-700"><i data-lucide="bell"></i></button>
                     <div class="flex items-center">
                         <img src="https://placehold.co/40x40/6366f1/ffffff?text=A" alt="Admin" class="w-10 h-10 rounded-full">
-                        <div class="ml-2 hidden md:block">
-                            <p class="font-semibold text-sm">Admin User</p>
-                            <p class="text-xs text-gray-500">Super Admin</p>
-                        </div>
+                        <div class="ml-2 hidden md:block"><p class="font-semibold text-sm">Admin User</p><p class="text-xs text-gray-500">Super Admin</p></div>
                     </div>
                 </div>
             </header>
 
-            <!-- Main Content Views -->
             <div class="flex-1 overflow-x-hidden overflow-y-auto bg-gray-100 p-6">
-                
-                <!-- Dashboard View -->
-                <main id="dashboard-view" class="view container mx-auto">
-                    <!-- Statistics Cards -->
-                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-6">
-                         <div class="bg-white p-6 rounded-lg shadow-md flex items-center justify-between"><div><p class="text-sm font-medium text-gray-500">Total Revenue</p><p id="total-revenue" class="text-3xl font-bold">$0.00</p><p class="text-sm text-gray-400 mt-1">All-time revenue</p></div><div class="bg-blue-100 p-3 rounded-full"><i data-lucide="dollar-sign" class="text-blue-500"></i></div></div>
-                         <div class="bg-white p-6 rounded-lg shadow-md flex items-center justify-between"><div><p class="text-sm font-medium text-gray-500">Subscriptions</p><p id="total-subscriptions" class="text-3xl font-bold">0</p><p class="text-sm text-gray-400 mt-1">Total active subscriptions</p></div><div class="bg-green-100 p-3 rounded-full"><i data-lucide="users" class="text-green-500"></i></div></div>
-                         <div class="bg-white p-6 rounded-lg shadow-md flex items-center justify-between"><div><p class="text-sm font-medium text-gray-500">Sales</p><p id="total-sales" class="text-3xl font-bold">0</p><p class="text-sm text-gray-400 mt-1">Total successful sales</p></div><div class="bg-yellow-100 p-3 rounded-full"><i data-lucide="credit-card" class="text-yellow-500"></i></div></div>
-                    </div>
-                    <!-- Recent Sales Table -->
-                    <div class="bg-white p-6 rounded-lg shadow-md">
-                        <div class="flex justify-between items-center mb-4"><h3 class="font-semibold text-lg">Recent Sales</h3><button id="create-sale-btn" class="bg-indigo-600 text-white font-semibold py-2 px-4 rounded-md hover:bg-indigo-700 flex items-center gap-2"><i data-lucide="plus-circle" class="w-4 h-4"></i>Create</button></div>
-                        <div class="overflow-x-auto"><table id="sales-table" class="w-full min-w-max text-left"><thead><tr><th class="p-3 font-medium text-gray-500 uppercase">Invoice</th><th class="p-3 font-medium text-gray-500 uppercase">Customer</th><th class="p-3 font-medium text-gray-500 uppercase">Date</th><th class="p-3 font-medium text-gray-500 uppercase">Amount</th><th class="p-3 font-medium text-gray-500 uppercase">Status</th><th class="p-3 font-medium text-gray-500 uppercase text-right">Actions</th></tr></thead><tbody id="sales-table-body"></tbody></table></div>
-                    </div>
-                </main>
-
-                <!-- Users View -->
-                <main id="users-view" class="view container mx-auto hidden">
-                     <div class="bg-white p-6 rounded-lg shadow-md">
-                        <div class="flex justify-between items-center mb-4"><h3 class="font-semibold text-lg">User Management</h3><button id="create-user-btn" class="bg-indigo-600 text-white font-semibold py-2 px-4 rounded-md hover:bg-indigo-700 flex items-center gap-2"><i data-lucide="user-plus" class="w-4 h-4"></i>Add User</button></div>
-                        <div class="overflow-x-auto"><table id="users-table" class="w-full min-w-max text-left"><thead><tr><th class="p-3 font-medium text-gray-500 uppercase">Name</th><th class="p-3 font-medium text-gray-500 uppercase">Discord</th><th class="p-3 font-medium text-gray-500 uppercase">Role</th><th class="p-3 font-medium text-gray-500 uppercase">Joined Date</th><th class="p-3 font-medium text-gray-500 uppercase text-right">Actions</th></tr></thead><tbody id="users-table-body"></tbody></table></div>
-                    </div>
-                </main>
-
-                <!-- Other placeholder views -->
+                <main id="dashboard-view" class="view container mx-auto"><div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-6"><div class="bg-white p-6 rounded-lg shadow-md flex items-center justify-between"><div><p class="text-sm font-medium text-gray-500">Total Revenue</p><p id="total-revenue" class="text-3xl font-bold">$0.00</p><p class="text-sm text-gray-400 mt-1">All-time revenue</p></div><div class="bg-blue-100 p-3 rounded-full"><i data-lucide="dollar-sign" class="text-blue-500"></i></div></div><div class="bg-white p-6 rounded-lg shadow-md flex items-center justify-between"><div><p class="text-sm font-medium text-gray-500">Subscriptions</p><p id="total-subscriptions" class="text-3xl font-bold">0</p><p class="text-sm text-gray-400 mt-1">Total active subscriptions</p></div><div class="bg-green-100 p-3 rounded-full"><i data-lucide="users" class="text-green-500"></i></div></div><div class="bg-white p-6 rounded-lg shadow-md flex items-center justify-between"><div><p class="text-sm font-medium text-gray-500">Sales</p><p id="total-sales" class="text-3xl font-bold">0</p><p class="text-sm text-gray-400 mt-1">Total successful sales</p></div><div class="bg-yellow-100 p-3 rounded-full"><i data-lucide="credit-card" class="text-yellow-500"></i></div></div></div><div class="bg-white p-6 rounded-lg shadow-md"><div class="flex justify-between items-center mb-4"><h3 class="font-semibold text-lg">Recent Sales</h3><button id="create-sale-btn" class="bg-indigo-600 text-white font-semibold py-2 px-4 rounded-md hover:bg-indigo-700 flex items-center gap-2"><i data-lucide="plus-circle" class="w-4 h-4"></i>Create</button></div><div class="overflow-x-auto"><table id="sales-table" class="w-full min-w-max text-left"><thead><tr><th class="p-3 font-medium text-gray-500 uppercase">Invoice</th><th class="p-3 font-medium text-gray-500 uppercase">Customer</th><th class="p-3 font-medium text-gray-500 uppercase">Date</th><th class="p-3 font-medium text-gray-500 uppercase">Amount</th><th class="p-3 font-medium text-gray-500 uppercase">Status</th><th class="p-3 font-medium text-gray-500 uppercase text-right">Actions</th></tr></thead><tbody id="sales-table-body"></tbody></table></div></div></main>
+                <main id="users-view" class="view container mx-auto hidden"><div class="bg-white p-6 rounded-lg shadow-md"><div class="flex justify-between items-center mb-4"><h3 class="font-semibold text-lg">User Management</h3><button id="create-user-btn" class="bg-indigo-600 text-white font-semibold py-2 px-4 rounded-md hover:bg-indigo-700 flex items-center gap-2"><i data-lucide="user-plus" class="w-4 h-4"></i>Add User</button></div><div class="overflow-x-auto"><table id="users-table" class="w-full min-w-max text-left"><thead><tr><th class="p-3 font-medium text-gray-500 uppercase">Name</th><th class="p-3 font-medium text-gray-500 uppercase">Discord</th><th class="p-3 font-medium text-gray-500 uppercase">Role</th><th class="p-3 font-medium text-gray-500 uppercase">Joined Date</th><th class="p-3 font-medium text-gray-500 uppercase text-right">Actions</th></tr></thead><tbody id="users-table-body"></tbody></table></div></div></main>
                 <main id="analytics-view" class="view container mx-auto hidden"><h1 class="text-2xl">Analytics Page (Placeholder)</h1></main>
                 <main id="orders-view" class="view container mx-auto hidden"><h1 class="text-2xl">Orders Page (Placeholder)</h1></main>
-
             </div>
         </div>
     </div>
     
-    <!-- Modals Container -->
-    <div id="modal-container">
-        <!-- All modals will be injected here by JS -->
-    </div>
-    
-    <!-- Cookie Consent Banner -->
-    <div id="cookie-banner" class="fixed bottom-0 inset-x-0 pb-2 sm:pb-5 hidden">
-        <div class="max-w-7xl mx-auto px-2 sm:px-6 lg:px-8">
-            <div class="p-2 rounded-lg bg-indigo-600 shadow-lg sm:p-3">
-                <div class="flex items-center justify-between flex-wrap">
-                    <div class="w-0 flex-1 flex items-center">
-                        <span class="flex p-2 rounded-lg bg-indigo-800"><i data-lucide="cookie" class="h-6 w-6 text-white"></i></span>
-                        <p class="ml-3 font-medium text-white truncate">
-                            <span class="md:hidden">We use cookies to save your data.</span>
-                            <span class="hidden md:inline">This website uses cookies to store your session data on your local device.</span>
-                        </p>
-                    </div>
-                    <div class="order-3 mt-2 flex-shrink-0 w-full sm:order-2 sm:mt-0 sm:w-auto">
-                        <button id="accept-cookies" class="flex items-center justify-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-indigo-600 bg-white hover:bg-indigo-50">Accept</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
+    <div id="modal-container"></div>
+    <div id="cookie-banner" class="fixed bottom-0 inset-x-0 pb-2 sm:pb-5 hidden"><div class="max-w-7xl mx-auto px-2 sm:px-6 lg:px-8"><div class="p-2 rounded-lg bg-indigo-600 shadow-lg sm:p-3"><div class="flex items-center justify-between flex-wrap"><div class="w-0 flex-1 flex items-center"><span class="flex p-2 rounded-lg bg-indigo-800"><i data-lucide="cookie" class="h-6 w-6 text-white"></i></span><p class="ml-3 font-medium text-white truncate"><span class="md:hidden">We use cookies to save your data.</span><span class="hidden md:inline">This website uses cookies to store your session data on your local device.</span></p></div><div class="order-3 mt-2 flex-shrink-0 w-full sm:order-2 sm:mt-0 sm:w-auto"><button id="accept-cookies" class="flex items-center justify-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-indigo-600 bg-white hover:bg-indigo-50">Accept</button></div></div></div></div></div>
 
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-            // --- DATA STORE ---
+            // --- DATA & STATE ---
             let users = [];
             let sales = [];
+            let itemToDelete = { id: null, type: null };
 
             // --- UI ELEMENT REFERENCES ---
-            const sidebar = document.getElementById('sidebar');
-            const sidebarToggle = document.getElementById('sidebar-toggle');
-            const sidebarNav = document.getElementById('sidebar-nav');
-            const viewTitle = document.getElementById('view-title');
+            const loginView = document.getElementById('login-view');
+            const appView = document.getElementById('app-view');
+            const loginForm = document.getElementById('login-form');
+            const loginError = document.getElementById('login-error');
+            const logoutBtn = document.getElementById('logout-btn');
             const modalContainer = document.getElementById('modal-container');
             const cookieBanner = document.getElementById('cookie-banner');
             const acceptCookiesBtn = document.getElementById('accept-cookies');
-            
-            let itemToDelete = { id: null, type: null };
 
             // --- TEMPLATES ---
             const getModalHtml = () => `
                 <div id="create-sale-modal" class="modal fixed inset-0 bg-black bg-opacity-50 z-50 flex justify-center items-center p-4 hidden opacity-0"><div class="bg-white p-8 rounded-lg shadow-xl max-w-md w-full"><h3 class="text-xl font-bold mb-6">Create New Sale</h3><form id="create-sale-form"><div class="mb-4"><label for="create-customer" class="block text-sm font-medium text-gray-700 mb-1">Customer Name</label><input type="text" id="create-customer" class="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-indigo-500" required></div><div class="mb-4"><label for="create-amount" class="block text-sm font-medium text-gray-700 mb-1">Amount ($)</label><input type="number" step="0.01" id="create-amount" class="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-indigo-500" required></div><div class="mb-6"><label for="create-status" class="block text-sm font-medium text-gray-700 mb-1">Status</label><select id="create-status" class="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-indigo-500"><option>Completed</option><option>Pending</option><option>Canceled</option></select></div><div class="flex justify-end gap-4"><button type="button" class="modal-cancel-btn px-6 py-2 bg-gray-200 text-gray-800 rounded-md hover:bg-gray-300">Cancel</button><button type="submit" class="px-6 py-2 bg-indigo-600 text-white font-semibold rounded-md hover:bg-indigo-700">Add Sale</button></div></form></div></div>
-                <div id="update-sale-modal" class="modal fixed inset-0 bg-black bg-opacity-50 z-50 flex justify-center items-center p-4 hidden opacity-0"><div class="bg-white p-8 rounded-lg shadow-xl max-w-md w-full"><h3 class="text-xl font-bold mb-6">Edit Order</h3><form id="update-sale-form"><input type="hidden" id="update-sale-id"><div class="mb-4"><label for="update-customer" class="block text-sm font-medium text-gray-700 mb-1">Customer</label><input type="text" id="update-customer" class="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-indigo-500"></div><div class="mb-4"><label for="update-amount" class="block text-sm font-medium text-gray-700 mb-1">Amount</label><input type="text" id="update-amount" class="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-indigo-500"></div><div class="mb-6"><label for="update-status" class="block text-sm font-medium text-gray-700 mb-1">Status</label><select id="update-status" class="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-indigo-500"><option>Completed</option><option>Pending</option><option>Canceled</option></select></div><div class="flex justify-end gap-4"><button type="button" class="modal-cancel-btn px-6 py-2 bg-gray-200 text-gray-800 rounded-md hover:bg-gray-300">Cancel</button><button type="submit" class="px-6 py-2 bg-indigo-600 text-white font-semibold rounded-md hover:bg-indigo-700">Save Changes</button></div></form></div></div>
                 <div id="create-user-modal" class="modal fixed inset-0 bg-black bg-opacity-50 z-50 flex justify-center items-center p-4 hidden opacity-0"><div class="bg-white p-8 rounded-lg shadow-xl max-w-md w-full"><h3 class="text-xl font-bold mb-6">Add New User</h3><form id="create-user-form"><div class="mb-4"><label for="create-user-name" class="block text-sm font-medium text-gray-700 mb-1">Full Name</label><input type="text" id="create-user-name" class="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-indigo-500" required></div><div class="mb-4"><label for="create-user-discord" class="block text-sm font-medium text-gray-700 mb-1">Discord Username</label><input type="text" id="create-user-discord" class="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-indigo-500" required></div><div class="mb-6"><label for="create-user-role" class="block text-sm font-medium text-gray-700 mb-1">Role</label><select id="create-user-role" class="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-indigo-500"><option>Member</option><option>Admin</option><option>Editor</option></select></div><div class="flex justify-end gap-4"><button type="button" class="modal-cancel-btn px-6 py-2 bg-gray-200 text-gray-800 rounded-md hover:bg-gray-300">Cancel</button><button type="submit" class="px-6 py-2 bg-indigo-600 text-white font-semibold rounded-md hover:bg-indigo-700">Add User</button></div></form></div></div>
                 <div id="edit-user-modal" class="modal fixed inset-0 bg-black bg-opacity-50 z-50 flex justify-center items-center p-4 hidden opacity-0"><div class="bg-white p-8 rounded-lg shadow-xl max-w-md w-full"><h3 class="text-xl font-bold mb-6">Edit User</h3><form id="edit-user-form"><input type="hidden" id="edit-user-id"><div class="mb-4"><label for="edit-user-name" class="block text-sm font-medium text-gray-700 mb-1">Full Name</label><input type="text" id="edit-user-name" class="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-indigo-500" required></div><div class="mb-4"><label for="edit-user-discord" class="block text-sm font-medium text-gray-700 mb-1">Discord Username</label><input type="text" id="edit-user-discord" class="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-indigo-500" required></div><div class="mb-6"><label for="edit-user-role" class="block text-sm font-medium text-gray-700 mb-1">Role</label><select id="edit-user-role" class="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-indigo-500"><option>Member</option><option>Admin</option><option>Editor</option></select></div><div class="flex justify-end gap-4"><button type="button" class="modal-cancel-btn px-6 py-2 bg-gray-200 text-gray-800 rounded-md hover:bg-gray-300">Cancel</button><button type="submit" class="px-6 py-2 bg-indigo-600 text-white font-semibold rounded-md hover:bg-indigo-700">Save Changes</button></div></form></div></div>
                 <div id="delete-confirm-modal" class="modal fixed inset-0 bg-black bg-opacity-50 z-50 flex justify-center items-center p-4 hidden opacity-0"><div class="bg-white p-8 rounded-lg shadow-xl max-w-sm w-full text-center"><div class="mx-auto flex-shrink-0 flex items-center justify-center h-12 w-12 rounded-full bg-red-100"><i data-lucide="alert-triangle" class="h-6 w-6 text-red-600"></i></div><h3 class="text-lg font-medium text-gray-900 mt-4">Delete Item</h3><p id="delete-confirm-message" class="text-sm text-gray-500 mt-2">Are you sure? This action cannot be undone.</p><div class="flex justify-center gap-4 mt-6"><button id="cancel-delete-btn" type="button" class="modal-cancel-btn px-6 py-2 bg-gray-200 text-gray-800 rounded-md hover:bg-gray-300">Cancel</button><button id="confirm-delete-btn" type="button" class="px-6 py-2 bg-red-600 text-white font-semibold rounded-md hover:bg-red-700">Delete</button></div></div></div>
-                <div id="settings-modal" class="modal fixed inset-0 bg-black bg-opacity-50 z-50 flex justify-center items-center p-4 hidden opacity-0"><div class="bg-white p-8 rounded-lg shadow-xl max-w-md w-full"><h3 class="text-xl font-bold mb-6">Settings</h3><form id="settings-form"><fieldset class="space-y-4"><div><legend class="text-base font-medium text-gray-900">Notifications</legend><div class="mt-2 space-y-2"><div class="flex items-start"><div class="flex items-center h-5"><input id="email-notifications" type="checkbox" class="focus:ring-indigo-500 h-4 w-4 text-indigo-600 border-gray-300 rounded"></div><div class="ml-3 text-sm"><label for="email-notifications" class="font-medium text-gray-700">Email Notifications</label><p class="text-gray-500">Get emails about new sales and updates.</p></div></div><div class="flex items-start"><div class="flex items-center h-5"><input id="push-notifications" type="checkbox" class="focus:ring-indigo-500 h-4 w-4 text-indigo-600 border-gray-300 rounded" checked></div><div class="ml-3 text-sm"><label for="push-notifications" class="font-medium text-gray-700">Push Notifications</label><p class="text-gray-500">Get push notifications on your devices.</p></div></div></div></div><div><legend class="text-base font-medium text-gray-900">Theme</legend><div class="mt-2 space-x-4"><label class="inline-flex items-center"><input type="radio" class="form-radio text-indigo-600" name="theme" value="light" checked><span class="ml-2">Light</span></label><label class="inline-flex items-center"><input type="radio" class="form-radio text-indigo-600" name="theme" value="dark"><span class="ml-2">Dark</span></label></div></div></fieldset><div class="flex justify-end gap-4 mt-8"><button type="button" class="modal-cancel-btn px-6 py-2 bg-gray-200 text-gray-800 rounded-md hover:bg-gray-300">Close</button><button type="submit" class="px-6 py-2 bg-indigo-600 text-white font-semibold rounded-md hover:bg-indigo-700">Save Settings</button></div></form></div></div>
-            `;
+                <div id="settings-modal" class="modal fixed inset-0 bg-black bg-opacity-50 z-50 flex justify-center items-center p-4 hidden opacity-0"><div class="bg-white p-8 rounded-lg shadow-xl max-w-md w-full"><h3 class="text-xl font-bold mb-6">Settings</h3><form id="settings-form"><fieldset class="space-y-4"><div><legend class="text-base font-medium text-gray-900">Notifications</legend><div class="mt-2 space-y-2"><div class="flex items-start"><div class="flex items-center h-5"><input id="email-notifications" type="checkbox" class="focus:ring-indigo-500 h-4 w-4 text-indigo-600 border-gray-300 rounded"></div><div class="ml-3 text-sm"><label for="email-notifications" class="font-medium text-gray-700">Email Notifications</label><p class="text-gray-500">Get emails about new sales and updates.</p></div></div><div class="flex items-start"><div class="flex items-center h-5"><input id="push-notifications" type="checkbox" class="focus:ring-indigo-500 h-4 w-4 text-indigo-600 border-gray-300 rounded" checked></div><div class="ml-3 text-sm"><label for="push-notifications" class="font-medium text-gray-700">Push Notifications</label><p class="text-gray-500">Get push notifications on your devices.</p></div></div></div></div><div><legend class="text-base font-medium text-gray-900">Theme</legend><div class="mt-2 space-x-4"><label class="inline-flex items-center"><input type="radio" class="form-radio text-indigo-600" name="theme" value="light" checked><span class="ml-2">Light</span></label><label class="inline-flex items-center"><input type="radio" class="form-radio text-indigo-600" name="theme" value="dark"><span class="ml-2">Dark</span></label></div></div></fieldset><div class="flex justify-end gap-4 mt-8"><button type="button" class="modal-cancel-btn px-6 py-2 bg-gray-200 text-gray-800 rounded-md hover:bg-gray-300">Close</button><button type="submit" class="px-6 py-2 bg-indigo-600 text-white font-semibold rounded-md hover:bg-indigo-700">Save Settings</button></div></form></div></div>`;
             
-            // --- PERSISTENCE FUNCTIONS ---
-            /**
-             * Saves the current state of users and sales.
-             * Now uses localStorage for persistence.
-             */
+            // --- PERSISTENCE & AUTH FUNCTIONS ---
             const saveData = () => {
                 const data = { users, sales };
                 localStorage.setItem('adminPanelData', JSON.stringify(data));
-                console.log("Data saved to localStorage.");
             };
-
-            /**
-             * Loads data from localStorage.
-             */
             const loadData = () => {
                 const savedData = localStorage.getItem('adminPanelData');
                 if (savedData) {
                     const data = JSON.parse(savedData);
                     users = data.users || [];
                     sales = data.sales || [];
+                } else { users = []; sales = []; }
+            };
+            const checkAuth = () => {
+                // Simulate checking session storage for a logged-in user
+                if (sessionStorage.getItem('isLoggedIn') === 'true') {
+                    showApp();
                 } else {
-                    users = [];
-                    sales = [];
+                    showLogin();
                 }
-                console.log("Data loaded from localStorage.");
             };
 
-            // --- CORE FUNCTIONS ---
+            // --- UI CONTROL FUNCTIONS ---
+            const showLogin = () => {
+                loginView.classList.remove('hidden');
+                appView.classList.add('hidden');
+            };
+            const showApp = () => {
+                loginView.classList.add('hidden');
+                appView.classList.remove('hidden');
+                initializeMainApp();
+            };
             const updateStatistics = () => {
                 let totalRevenue = 0, salesCount = 0, subscriptionsCount = 0;
                 sales.forEach(sale => {
@@ -248,80 +223,59 @@
                 document.getElementById('total-sales').textContent = salesCount.toLocaleString();
                 document.getElementById('total-subscriptions').textContent = subscriptionsCount.toLocaleString();
             };
-            
             const openModal = (modal) => {
                 modal.classList.remove('hidden');
                 setTimeout(() => modal.classList.remove('opacity-0'), 10);
             };
-            
             const closeModal = (modal) => {
                 modal.classList.add('opacity-0');
                 setTimeout(() => modal.classList.add('hidden'), 300);
             };
-
             const switchView = (viewId) => {
                 document.querySelectorAll('.view').forEach(view => view.classList.add('hidden'));
                 document.getElementById(viewId).classList.remove('hidden');
-                
                 const activeLink = document.querySelector(`[data-view="${viewId}"]`);
-                document.querySelectorAll('#sidebar-nav .sidebar-link').forEach(link => {
-                    link.classList.remove('sidebar-link-active', 'text-white');
-                    link.classList.add('text-gray-600');
-                });
-                if(activeLink){
+                document.querySelectorAll('#sidebar-nav .sidebar-link').forEach(link => link.classList.remove('sidebar-link-active'));
+                if(activeLink) {
                     activeLink.classList.add('sidebar-link-active');
-                    activeLink.classList.remove('text-gray-600');
-                    viewTitle.textContent = activeLink.textContent.trim();
+                    document.getElementById('view-title').textContent = activeLink.textContent.trim();
                 }
             };
             
+            // --- RENDER FUNCTIONS ---
             const renderSales = () => {
                 const salesTableBody = document.getElementById('sales-table-body');
                 salesTableBody.innerHTML = '';
-                sales.forEach(sale => {
-                    let statusClass = '';
-                    if (sale.status === 'Completed') statusClass = 'bg-green-100 text-green-700';
-                    else if (sale.status === 'Pending') statusClass = 'bg-yellow-100 text-yellow-700';
-                    else statusClass = 'bg-red-100 text-red-700';
-                    const row = `<tr class="border-b" data-id="${sale.id}"><td class="p-4 font-semibold">${sale.id}</td><td class="p-4">${sale.customer}</td><td class="p-4 text-gray-600">${sale.date}</td><td class="p-4 font-semibold">$${sale.amount.toFixed(2)}</td><td class="p-4"><span class="px-3 py-1 text-xs font-medium rounded-full ${statusClass}">${sale.status}</span></td><td class="p-4 text-right"><button class="edit-btn text-indigo-600 hover:text-indigo-900 font-medium" data-type="sale">Edit</button></td></tr>`;
-                    salesTableBody.insertAdjacentHTML('beforeend', row);
-                });
+                sales.forEach(sale => salesTableBody.insertAdjacentHTML('beforeend', `<tr class="border-b" data-id="${sale.id}"><td class="p-4 font-semibold">${sale.id}</td><td class="p-4">${sale.customer}</td><td class="p-4 text-gray-600">${sale.date}</td><td class="p-4 font-semibold">$${sale.amount.toFixed(2)}</td><td class="p-4"><span class="px-3 py-1 text-xs font-medium rounded-full ${sale.status === 'Completed' ? 'bg-green-100 text-green-700' : sale.status === 'Pending' ? 'bg-yellow-100 text-yellow-700' : 'bg-red-100 text-red-700'}">${sale.status}</span></td><td class="p-4 text-right"><button class="edit-btn text-indigo-600 hover:text-indigo-900 font-medium" data-type="sale">Edit</button></td></tr>`));
                 updateStatistics();
                 saveData();
             };
-
             const renderUsers = () => {
                 const usersTableBody = document.getElementById('users-table-body');
                 usersTableBody.innerHTML = '';
-                users.forEach(user => {
-                    const row = `<tr class="border-b" data-id="${user.id}"><td class="p-4 font-semibold">${user.name}</td><td class="p-4 text-gray-600">${user.discord}</td><td class="p-4">${user.role}</td><td class="p-4 text-gray-600">${user.joined}</td><td class="p-4 text-right space-x-2"><button class="edit-btn text-indigo-600 hover:text-indigo-900 font-medium" data-type="user">Edit</button><button class="delete-btn text-red-600 hover:text-red-900 font-medium" data-type="user">Delete</button></td></tr>`;
-                    usersTableBody.insertAdjacentHTML('beforeend', row);
-                });
+                users.forEach(user => usersTableBody.insertAdjacentHTML('beforeend', `<tr class="border-b" data-id="${user.id}"><td class="p-4 font-semibold">${user.name}</td><td class="p-4 text-gray-600">${user.discord}</td><td class="p-4">${user.role}</td><td class="p-4 text-gray-600">${user.joined}</td><td class="p-4 text-right space-x-2"><button class="edit-btn text-indigo-600 hover:text-indigo-900 font-medium" data-type="user">Edit</button><button class="delete-btn text-red-600 hover:text-red-900 font-medium" data-type="user">Delete</button></td></tr>`));
                 saveData();
             };
             
-            const initApp = () => {
+            // --- INITIALIZATION & EVENT LISTENERS ---
+            const initializeMainApp = () => {
                 modalContainer.innerHTML = getModalHtml();
                 lucide.createIcons();
-                
-                // Show cookie banner if not accepted
-                // To implement, uncomment this line:
-                // if (localStorage.getItem('cookiesAccepted') !== 'true') {
+                if (localStorage.getItem('cookiesAccepted') !== 'true') {
                     cookieBanner.classList.remove('hidden');
-                // }
-
+                }
                 loadData();
                 renderSales();
                 renderUsers();
-                attachEventListeners();
+                attachAppEventListeners();
             };
-            
-            const attachEventListeners = () => {
-                 sidebarNav.addEventListener('click', (e) => {
+
+            const attachAppEventListeners = () => {
+                 document.getElementById('sidebar-nav').addEventListener('click', (e) => {
                     const link = e.target.closest('a[data-view]');
                     if (link) { e.preventDefault(); switchView(link.dataset.view); }
                 });
-                sidebarToggle.addEventListener('click', () => sidebar.classList.toggle('-translate-x-full'));
+                document.getElementById('sidebar-toggle').addEventListener('click', () => document.getElementById('sidebar').classList.toggle('-translate-x-full'));
                 
                 document.querySelectorAll('.modal').forEach(modal => {
                     modal.querySelector('.modal-cancel-btn')?.addEventListener('click', () => closeModal(modal));
@@ -393,14 +347,35 @@
                 });
                 
                 acceptCookiesBtn.addEventListener('click', () => {
-                    // To implement, uncomment this line:
-                    // localStorage.setItem('cookiesAccepted', 'true');
+                    localStorage.setItem('cookiesAccepted', 'true');
                     cookieBanner.style.display = 'none';
                 });
             };
 
-            // --- INITIALIZE APP ---
-            initApp();
+            // Login-specific event listener
+            loginForm.addEventListener('submit', (e) => {
+                e.preventDefault();
+                const username = e.target.username.value;
+                const password = e.target.password.value;
+
+                if (username === 'admin' && password === 'password') {
+                    // Simulate setting a session
+                    sessionStorage.setItem('isLoggedIn', 'true');
+                    showApp();
+                } else {
+                    loginError.textContent = 'Invalid username or password.';
+                    setTimeout(() => { loginError.textContent = ''; }, 3000);
+                }
+            });
+            
+            logoutBtn.addEventListener('click', (e) => {
+                e.preventDefault();
+                sessionStorage.removeItem('isLoggedIn');
+                showLogin();
+            });
+
+            // Initial check on page load
+            checkAuth();
         });
     </script>
 </body>
